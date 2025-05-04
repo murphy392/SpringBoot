@@ -1,10 +1,16 @@
 package com.example.menu.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.menu.model.Item;
 import com.example.menu.service.ItemService;
+
+import jakarta.validation.Valid;
 
 
 
@@ -46,12 +54,12 @@ public class ItemController {
     }
     
     @PostMapping
-    public Item create(@RequestBody Item item) {
+    public Item create(@Valid @RequestBody Item item) {
         return service.create(item);
     }
 
     @PutMapping("/{id}")
-    public Item update(@PathVariable("id") Long id, @RequestBody Item updatedItem) {
+    public Item update(@PathVariable("id") Long id, @Valid @RequestBody Item updatedItem) {
         return service.updateItem(id, updatedItem);
     }
 
@@ -59,6 +67,18 @@ public class ItemController {
     public ResponseEntity<Item> delete(@PathVariable("id") Long id){
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        List<ObjectError> errors = ex.getBindingResult().getAllErrors();
+        Map<String, String> map = new HashMap<>(errors.size());
+        errors.forEach((error) -> {
+            String key = ((FieldError) error).getField();
+            String val = error.getDefaultMessage();
+            map.put(key, val);
+        });
+        return ResponseEntity.badRequest().body(map);
     }
     
 }

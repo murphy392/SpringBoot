@@ -1,12 +1,29 @@
 package com.example.menu.model;
 
+import org.hibernate.validator.constraints.URL;
 import org.springframework.data.annotation.Id;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 
 public class Item {
     private Long id;
+
+    @NotNull(message="name is required")
+    @Pattern(regexp="^[a-zA-Z ]+$", message="name must be a string")
     private String name;
+
+    @NotNull(message = "price is required")
+    @Positive(message = "price must be positive")
     private Long price;
+
+    @NotNull(message = "description is required")
+    @Pattern(regexp="^[a-zA-Z ]+$", message = "description must be a string")
     private String description;
+
+    @NotNull(message = "image is required")
+    @URL(message = "image must be a URL")
     private String image;
 
     public Item(
