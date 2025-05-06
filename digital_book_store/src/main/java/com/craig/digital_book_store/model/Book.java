@@ -2,23 +2,22 @@ package com.craig.digital_book_store.model;
 
 import java.math.BigDecimal;
 
-import jakarta.persistence.Id;
+import org.springframework.data.annotation.Id;
+
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 
 public class Book {
     private Long id;
 
     @NotNull(message="title is required")
-    @Pattern(regexp="^[a-zA-Z ]+$", message="name must be a string")
     private String title;
 
-    @NotNull(message="title is required")
-    @Pattern(regexp="^[a-zA-Z ]+$", message="name must be a string")
+    @NotNull(message="author is required")
     private String author;
 
     @NotNull(message="quantity is required")
+    @Positive(message="quantity must be positive or 0") //Fix to allow for 0 quantity
     private int quantity;
 
     @NotNull(message="price is required")

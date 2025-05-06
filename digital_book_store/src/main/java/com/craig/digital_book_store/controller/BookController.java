@@ -43,25 +43,24 @@ public class BookController {
         return ResponseEntity.ok().body(books);
     }
 
-    //Update the below to return a List<Book> as there can be multiple books with the same title
     @GetMapping("/{title}")
-    public Book findByTitle(@PathVariable("title") String title) {
+    public Map<Long, Book> findByTitle(@PathVariable("title") String title) {
         return bookService.findByTitle(title);
     }
 
     @GetMapping("/{author}")
-    public List<Book> findByAuthor(@PathVariable("author") String author) {
+    public Map<Long, Book> findByAuthor(@PathVariable("author") String author) {
         return bookService.findByAuthor(author);
     }
-    
+
 
     @PostMapping("/addBook")
-    public Book create(@Valid @RequestBody Book book) {
+    public Book create(@RequestBody @Valid Book book) {
         return bookService.create(book);
     }
     
     @PutMapping("/updateBook/{id}")
-    public Book updateBook(@PathVariable("id") Long id, @Valid @RequestBody Book updateBook) {   
+    public Book updateBook(@PathVariable("id") Long id, @Valid @RequestBody Book updateBook) {
         return bookService.updateBook(id, updateBook);
     }
 
