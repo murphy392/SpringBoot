@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -24,16 +25,13 @@ import com.craig.digital_book_store.service.BookService;
 
 import jakarta.validation.Valid;
 
-
-
-
 @RestController
 @RequestMapping("/books")
 public class BookController {
     @Autowired
     private final BookService bookService;
 
-    public BookController(BookService bookService){
+    public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 
@@ -42,19 +40,22 @@ public class BookController {
         List<Book> books = bookService.getAll();
         return ResponseEntity.ok().body(books);
     }
-
     @GetMapping("/byId{id}")
-    public Book findById(@PathVariable("id") Long id) {
-        return bookService.findById(id);
-
+    public ResponseEntity<Book> findById(@PathVariable("id") Long id) {
+        Book book = bookService.findById(id);
+        if (book != null) {
+            return new ResponseEntity<>(book, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
-    @GetMapping("/{title}")
+    @GetMapping("/findByTitle/{title}")
     public Map<Long, Book> findByTitle(@PathVariable("title") String title) {
         return bookService.findByTitle(title);
     }
 
-    @GetMapping("/{author}")
+    @GetMapping("/findByAuthor/{author}")
     public Map<Long, Book> findByAuthor(@PathVariable("author") String author) {
         return bookService.findByAuthor(author);
     }
@@ -66,8 +67,14 @@ public class BookController {
     }
     
     @PutMapping("/updateBook/{id}")
-    public Book updateBook(@PathVariable("id") Long id, @Valid @RequestBody Book updateBook) {
-        return bookService.updateBook(id, updateBook);
+    public ResponseEntity<Book> updateBook(@PathVariable("id") Long id, @Valid @RequestBody Book updateBook) {
+        Book existingBook = bookService.findById(id);
+        if (existingBook != null) {
+            Book updated = bookService.updateBook(id, updateBook);
+            return ResponseEntity.ok(updated);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/deleteBook/{id}")

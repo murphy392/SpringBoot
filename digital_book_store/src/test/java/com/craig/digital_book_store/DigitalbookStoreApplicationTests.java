@@ -1,10 +1,10 @@
-package com.craig.digita_lbook_store;
+package com.craig.digital_book_store;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DigitaLbookStoreApplicationTests {
+class DigitalbookStoreApplicationTests {
 
 	@Test
 	void contextLoads() {

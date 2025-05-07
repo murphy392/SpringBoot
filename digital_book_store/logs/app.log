@@ -1,0 +1,14 @@
+2025-05-07T16:21:05.906-04:00  INFO 33088 --- [digital_book_store] [main] c.c.d.controller.BookControllerTest      : Starting BookControllerTest using Java 17.0.1 with PID 33088 (started by Craig in C:\Users\Craig\SpringProjects\digital_book_store)
+2025-05-07T16:21:05.911-04:00 DEBUG 33088 --- [digital_book_store] [main] c.c.d.controller.BookControllerTest      : Running with Spring Boot v3.4.5, Spring v6.2.6
+2025-05-07T16:21:05.912-04:00  INFO 33088 --- [digital_book_store] [main] c.c.d.controller.BookControllerTest      : No active profile set, falling back to 1 default profile: "default"
+2025-05-07T16:21:08.180-04:00  INFO 33088 --- [digital_book_store] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-05-07T16:21:08.218-04:00  INFO 33088 --- [digital_book_store] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-05-07T16:21:08.220-04:00  INFO 33088 --- [digital_book_store] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2025-05-07T16:21:08.270-04:00  INFO 33088 --- [digital_book_store] [main] c.c.d.controller.BookControllerTest      : Started BookControllerTest in 2.674 seconds (process running for 3.479)
+2025-05-07T16:21:47.606-04:00  INFO 29512 --- [digital_book_store] [main] c.c.d.controller.BookControllerTest      : Starting BookControllerTest using Java 17.0.1 with PID 29512 (started by Craig in C:\Users\Craig\SpringProjects\digital_book_store)
+2025-05-07T16:21:47.607-04:00 DEBUG 29512 --- [digital_book_store] [main] c.c.d.controller.BookControllerTest      : Running with Spring Boot v3.4.5, Spring v6.2.6
+2025-05-07T16:21:47.607-04:00  INFO 29512 --- [digital_book_store] [main] c.c.d.controller.BookControllerTest      : No active profile set, falling back to 1 default profile: "default"
+2025-05-07T16:21:49.699-04:00  INFO 29512 --- [digital_book_store] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-05-07T16:21:49.700-04:00  INFO 29512 --- [digital_book_store] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-05-07T16:21:49.701-04:00  INFO 29512 --- [digital_book_store] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2025-05-07T16:21:49.760-04:00  INFO 29512 --- [digital_book_store] [main] c.c.d.controller.BookControllerTest      : Started BookControllerTest in 2.464 seconds (process running for 3.223)
