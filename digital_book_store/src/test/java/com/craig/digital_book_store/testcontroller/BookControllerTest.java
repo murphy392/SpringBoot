@@ -1,4 +1,4 @@
-package com.craig.digital_book_store.controller;
+package com.craig.digital_book_store.testcontroller;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -25,9 +25,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import com.craig.digital_book_store.exceptions.BookNotFoundException;
-import com.craig.digital_book_store.model.Book;
-import com.craig.digital_book_store.service.BookService;
+import com.craig.digital_book_store.controller.BookController;
+import com.craig.digital_book_store.testexceptions.BookNotFoundException;
+import com.craig.digital_book_store.testmodel.Book;
+import com.craig.digital_book_store.testservice.BookService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

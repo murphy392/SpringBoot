@@ -1,4 +1,4 @@
-package com.craig.digital_book_store.exceptions;
+package com.craig.digital_book_store.testexceptions;
 
 public class BookNotFoundException extends RuntimeException{
 

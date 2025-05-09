@@ -3,6 +3,7 @@ package com.craig.digital_book_store.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,6 @@ import com.craig.digital_book_store.service.BookService;
 
 import jakarta.validation.Valid;
 
-
-
-
 @RestController
 @RequestMapping("/books")
 public class BookController {
@@ -44,18 +42,19 @@ public class BookController {
     }
 
     @GetMapping("/byId{id}")
-    public Book findById(@PathVariable("id") Long id) {
-        return bookService.findById(id);
+    public ResponseEntity<Book> findById(@PathVariable("id") Long id) {
+        Optional<Book> book = bookService.findById(id);
+        return ResponseEntity.of(book);
 
     }
 
-    @GetMapping("/{title}")
-    public Map<Long, Book> findByTitle(@PathVariable("title") String title) {
+    @GetMapping("/findByTitle/{title}")
+    public List<Book> findByTitle(@PathVariable("title") String title) {
         return bookService.findByTitle(title);
     }
 
-    @GetMapping("/{author}")
-    public Map<Long, Book> findByAuthor(@PathVariable("author") String author) {
+    @GetMapping("/findByAuthor/{author}")
+    public List<Book> findByAuthor(@PathVariable("author") String author) {
         return bookService.findByAuthor(author);
     }
 
@@ -66,8 +65,14 @@ public class BookController {
     }
     
     @PutMapping("/updateBook/{id}")
-    public Book updateBook(@PathVariable("id") Long id, @Valid @RequestBody Book updateBook) {
-        return bookService.updateBook(id, updateBook);
+    public ResponseEntity<Book> updateBook(@PathVariable("id") Long id, @Valid @RequestBody Book updateBook) {
+        Optional<Book> existingBook = bookService.findById(id);
+        if (existingBook.isPresent()) {
+            Optional<Book> updated = bookService.updateBook(id, updateBook);
+            return updated.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/deleteBook/{id}")

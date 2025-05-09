@@ -1,19 +1,36 @@
-package com.craig.digital_book_store.model;
+package com.craig.digital_book_store.testmodel;
 
 import java.math.BigDecimal;
 
 import org.springframework.data.annotation.Id;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+
 public class Book {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull(message="title is required")
     private String title;
+
+    @NotNull(message="author is required")
     private String author;
+
+    @NotNull(message="quantity is required")
+    @Positive(message="quantity must be positive or 0") //Fix to allow for 0 quantity
     private int quantity;
+
+    @NotNull(message="price is required")
+    @Positive(message="price must be positive or 0.00")
     private BigDecimal price;
     private String description;
 
-    public Book(Long id, String title, String author, int quantity, BigDecimal price, String description) {
-        this.id = id;
+    public Book(String title, String author, int quantity, BigDecimal price, String description){
         this.title = title;
         this.author = author;
         this.quantity = quantity;
@@ -54,6 +71,6 @@ public class Book {
     }
 
     public Book updateBook(Book book){
-        return new Book(this.id, book.title, book.author, book.quantity, book.price, book.description);
+        return new Book(book.title, book.author, book.quantity, book.price, book.description);
     }
 }
