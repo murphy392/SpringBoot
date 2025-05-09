@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Service;
 
+import com.craig.digital_book_store.exceptions.BookNotFoundException;
 import com.craig.digital_book_store.model.Book;
 import com.craig.digital_book_store.repository.BookRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 @EnableJpaRepositories
@@ -48,13 +51,22 @@ public class BookService {
        return repo.save(copy);
     }
 
-    public Optional<Book> updateBook(Long id, Book book){
-        return repo.findById(id)
-            .map(oldBook -> {
-                Book updated = oldBook.updateBook(book);
-                return repo.save(updated);
-            });
+    @Transactional
+    public Book updateBook(Long id, Book updatedBook) throws BookNotFoundException {
+        Optional<Book> existingBookOptional = repo.findById(id);
+        if (existingBookOptional.isPresent()) {
+            Book existingBook = existingBookOptional.get();
+            existingBook.setTitle(updatedBook.getTitle());
+            existingBook.setAuthor(updatedBook.getAuthor());
+            existingBook.setPrice(updatedBook.getPrice());
+            existingBook.setQuantity(updatedBook.getQuantity());
+            existingBook.setDescription(updatedBook.getDescription());
+            return repo.save(existingBook);
+        } else {
+            throw new BookNotFoundException("Book not found with id: " + id);
+        }
     }
+    
 
     public void removeBook(Long id) {
        repo.deleteById(id);

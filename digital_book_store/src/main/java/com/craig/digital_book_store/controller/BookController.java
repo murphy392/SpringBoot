@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.craig.digital_book_store.exceptions.BookNotFoundException;
 import com.craig.digital_book_store.model.Book;
 import com.craig.digital_book_store.service.BookService;
 
+import jakarta.validation.ReportAsSingleViolation;
 import jakarta.validation.Valid;
 
 @RestController
@@ -41,41 +43,40 @@ public class BookController {
         return ResponseEntity.ok().body(books);
     }
 
-    @GetMapping("/byId{id}")//returning 404
+    @GetMapping("/byId{id}")
     public ResponseEntity<Book> findById(@PathVariable("id") Long id) {
         Optional<Book> book = bookService.findById(id);
         return ResponseEntity.of(book);
 
     }
 
-    @GetMapping("/findByTitle/{title}")//not returning book
+    @GetMapping("/findByTitle/{title}")
     public List<Book> findByTitle(@PathVariable("title") String title) {
         return bookService.findByTitle(title);
     }
 
-    @GetMapping("/findByAuthor/{author}")//not returning book
+    @GetMapping("/findByAuthor/{author}")
     public List<Book> findByAuthor(@PathVariable("author") String author) {
         return bookService.findByAuthor(author);
     }
 
 
-    @PostMapping("/addBook")//successfully working
+    @PostMapping("/addBook")
     public Book create(@RequestBody @Valid Book book) {
         return bookService.create(book);
     }
     
-    @PutMapping("/updateBook/{id}")//Error 500
+    @PutMapping("/updateBook/{id}")//failing to update appropriately
     public ResponseEntity<Book> updateBook(@PathVariable("id") Long id, @Valid @RequestBody Book updateBook) {
-        Optional<Book> existingBook = bookService.findById(id);
-        if (existingBook.isPresent()) {
-            Optional<Book> updated = bookService.updateBook(id, updateBook);
-            return updated.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-        } else {
+        try {
+            Book savedBook = bookService.updateBook(id, updateBook);
+            return ResponseEntity.ok(savedBook);
+        } catch (BookNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping("/deleteBook/{id}")//Error 500
+    @DeleteMapping("/deleteBook/{id}")
     public ResponseEntity<Book> delete(@PathVariable("id") Long id) {
         bookService.removeBook(id);
         return ResponseEntity.noContent().build();
