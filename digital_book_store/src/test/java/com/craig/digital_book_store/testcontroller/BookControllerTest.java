@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.craig.digital_book_store.controller.BookController;
 import com.craig.digital_book_store.testexceptions.BookNotFoundException;
 import com.craig.digital_book_store.testmodel.Book;
+import com.craig.digital_book_store.testrepo.BookRepository;
 import com.craig.digital_book_store.testservice.BookService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,13 +47,16 @@ public class BookControllerTest {
     @MockBean
     private BookService bookService;
 
+    @MockBean
+    private BookRepository repo;
+
     @Test //Pass
     void getAll_shouldReturnListOfBooks() throws Exception {
         //Arrange
         List<Book> books = Arrays.asList(
-            new Book(1L, "The Lord of the Rings: The Fellowship of the Ring", "J.R.R Tolkien", 30, new BigDecimal(5.99), "First book in the series"),
-            new Book(2L, "The Lord of the Rings: The Two Towers", "J.R.R Tolkien", 20, new BigDecimal(7.99), "Second book in the series"),
-            new Book(3L, "The Lord of the Rings: The Return of the King", "J.R.R. Tolkien", 10, new BigDecimal(99.00), "Special edition of the third book in the series")
+            new Book("The Lord of the Rings: The Fellowship of the Ring", "J.R.R Tolkien", 30, new BigDecimal(5.99), "First book in the series"),
+            new Book("The Lord of the Rings: The Two Towers", "J.R.R Tolkien", 20, new BigDecimal(7.99), "Second book in the series"),
+            new Book("The Lord of the Rings: The Return of the King", "J.R.R. Tolkien", 10, new BigDecimal(99.00), "Special edition of the third book in the series")
         );
 
         when(bookService.getAll()).thenReturn(books);
@@ -100,8 +105,8 @@ public class BookControllerTest {
     void findById_shouldReturnBook_whenIdExists() throws Exception{
         //Arrange
         Long id = 1L;
-        Book book = new Book(id, "The Lord of the Rings: The Fellowship of the Ring", "J.R.R Tolkien", 30, new BigDecimal(5.99), "First book in the series");
-        when(bookService.findById(id)).thenReturn(book);
+        Book book = new Book("The Lord of the Rings: The Fellowship of the Ring", "J.R.R Tolkien", 30, new BigDecimal(5.99), "First book in the series");
+        when(repo.findById(id)).thenReturn(Optional.of(book));
 
         //Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:9000/books/byId{id}", id))
@@ -135,11 +140,11 @@ public class BookControllerTest {
         //Arrange
         String title = "The Lord of the Rings";
         Map<Long, Book> books = new HashMap<>();
-            books.put(1L, new Book(1L, "The Lord of the Rings: The Fellowship of the Ring", "J.R.R Tolkien", 30, new BigDecimal(5.99), "First book in the series"));
-            books.put(2L, new Book(2L, "The Lord of the Rings: The Two Towers", "J.R.R Tolkien", 20, new BigDecimal(7.99), "Second book in the series"));
-            books.put(3L,new Book(3L, "The Lord of the Rings: The Return of the King", "J.R.R. Tolkien", 10, new BigDecimal(99.00), "Special edition of the third book in the series"));
+            books.put(1L, new Book("The Lord of the Rings: The Fellowship of the Ring", "J.R.R Tolkien", 30, new BigDecimal(5.99), "First book in the series"));
+            books.put(2L, new Book("The Lord of the Rings: The Two Towers", "J.R.R Tolkien", 20, new BigDecimal(7.99), "Second book in the series"));
+            books.put(3L,new Book("The Lord of the Rings: The Return of the King", "J.R.R. Tolkien", 10, new BigDecimal(99.00), "Special edition of the third book in the series"));
 
-        when(bookService.findByTitle(title)).thenReturn(books);
+        when(repo.findByTitle(title)).thenReturn(Optional.of(books));
 
         //Act & Assert
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:9000/books/findByTitle/{title}", title))
@@ -193,9 +198,9 @@ public class BookControllerTest {
         //Arrange
         String author = "J.R.R Tolkien";
         Map<Long, Book> books = new HashMap<>();
-            books.put(1L, new Book(1L, "The Lord of the Rings: The Fellowship of the Ring", "J.R.R Tolkien", 30, new BigDecimal(5.99), "First book in the series"));
-            books.put(2L, new Book(2L, "The Lord of the Rings: The Two Towers", "J.R.R Tolkien", 20, new BigDecimal(7.99), "Second book in the series"));
-            books.put(3L,new Book(3L, "The Lord of the Rings: The Return of the King", "J.R.R. Tolkien", 10, new BigDecimal(99.00), "Special edition of the third book in the series"));
+            books.put(1L, new Book("The Lord of the Rings: The Fellowship of the Ring", "J.R.R Tolkien", 30, new BigDecimal(5.99), "First book in the series"));
+            books.put(2L, new Book("The Lord of the Rings: The Two Towers", "J.R.R Tolkien", 20, new BigDecimal(7.99), "Second book in the series"));
+            books.put(3L,new Book("The Lord of the Rings: The Return of the King", "J.R.R. Tolkien", 10, new BigDecimal(99.00), "Special edition of the third book in the series"));
 
         when(bookService.findByAuthor(author)).thenReturn(books);
 
@@ -273,11 +278,11 @@ public class BookControllerTest {
     void updateBook_shouldReturnUpdatedBook_whenIdExists() throws Exception {
         //Arrange
         Long bookId = 1L;
-        Book updatedBook = new Book(null, "The Lord of the Rings: The Fellowship of the Ring", "J.R.R Tolkien", 15, new BigDecimal(7.99), "Test");
-        Book existingBook = new Book(bookId, "The Lord of the Rings: The Fellowship of the Ring", "J.R.R Tolkien", 30, new BigDecimal(5.99), "First book in the series");
+        Book updatedBook = new Book("The Lord of the Rings: The Fellowship of the Ring", "J.R.R Tolkien", 15, new BigDecimal(7.99), "Test");
+        Book existingBook = new Book("The Lord of the Rings: The Fellowship of the Ring", "J.R.R Tolkien", 30, new BigDecimal(5.99), "First book in the series");
 
         when(bookService.findById(bookId)).thenReturn(existingBook);
-        when(bookService.updateBook(eq(bookId), any(Book.class))).thenReturn(new Book(bookId, "The Lord of the Rings: The Fellowship of the Ring", "J.R.R Tolkien", 15, new BigDecimal(7.99), "First book in the series"));
+        when(bookService.updateBook(eq(bookId), any(Book.class))).thenReturn(new Book("The Lord of the Rings: The Fellowship of the Ring", "J.R.R Tolkien", 15, new BigDecimal(7.99), "First book in the series"));
 
         //Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.put("http://localhost:9000/books/updateBook/{id}", bookId)

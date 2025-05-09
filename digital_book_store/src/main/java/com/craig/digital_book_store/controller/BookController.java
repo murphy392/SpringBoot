@@ -41,30 +41,30 @@ public class BookController {
         return ResponseEntity.ok().body(books);
     }
 
-    @GetMapping("/byId{id}")
+    @GetMapping("/byId{id}")//returning 404
     public ResponseEntity<Book> findById(@PathVariable("id") Long id) {
         Optional<Book> book = bookService.findById(id);
         return ResponseEntity.of(book);
 
     }
 
-    @GetMapping("/findByTitle/{title}")
+    @GetMapping("/findByTitle/{title}")//not returning book
     public List<Book> findByTitle(@PathVariable("title") String title) {
         return bookService.findByTitle(title);
     }
 
-    @GetMapping("/findByAuthor/{author}")
+    @GetMapping("/findByAuthor/{author}")//not returning book
     public List<Book> findByAuthor(@PathVariable("author") String author) {
         return bookService.findByAuthor(author);
     }
 
 
-    @PostMapping("/addBook")
+    @PostMapping("/addBook")//successfully working
     public Book create(@RequestBody @Valid Book book) {
         return bookService.create(book);
     }
     
-    @PutMapping("/updateBook/{id}")
+    @PutMapping("/updateBook/{id}")//Error 500
     public ResponseEntity<Book> updateBook(@PathVariable("id") Long id, @Valid @RequestBody Book updateBook) {
         Optional<Book> existingBook = bookService.findById(id);
         if (existingBook.isPresent()) {
@@ -75,7 +75,7 @@ public class BookController {
         }
     }
 
-    @DeleteMapping("/deleteBook/{id}")
+    @DeleteMapping("/deleteBook/{id}")//Error 500
     public ResponseEntity<Book> delete(@PathVariable("id") Long id) {
         bookService.removeBook(id);
         return ResponseEntity.noContent().build();

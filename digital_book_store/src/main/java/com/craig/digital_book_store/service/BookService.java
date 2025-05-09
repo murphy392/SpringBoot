@@ -6,17 +6,26 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Service;
 
 import com.craig.digital_book_store.model.Book;
 import com.craig.digital_book_store.repository.BookRepository;
 
 @Service
+@EnableJpaRepositories
 public class BookService {
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
 
     @Autowired
-    private BookRepository repo;
+    private final BookRepository repo;
+
+    public BookService(BookRepository repo) {
+        this.repo = repo;
+    }
+
+    // @Autowired
+    // private BookRepository repo;
 
     public List<Book> getAll() {
         return repo.findAll();
