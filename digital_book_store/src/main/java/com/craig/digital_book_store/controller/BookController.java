@@ -24,7 +24,6 @@ import com.craig.digital_book_store.exceptions.BookNotFoundException;
 import com.craig.digital_book_store.model.Book;
 import com.craig.digital_book_store.service.BookService;
 
-import jakarta.validation.ReportAsSingleViolation;
 import jakarta.validation.Valid;
 
 @RestController

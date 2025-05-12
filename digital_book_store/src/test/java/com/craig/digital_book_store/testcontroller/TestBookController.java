@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,63 +21,64 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.craig.digital_book_store.model.Book;
-import com.craig.digital_book_store.service.BookService;
+import com.craig.digital_book_store.testexceptions.TestBookNotFoundException;
+import com.craig.digital_book_store.testmodel.TestBook;
+import com.craig.digital_book_store.testservice.TestBookService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/books")
-public class BookController {
+@Component("testBookController")
+public class TestBookController {
     @Autowired
-    private final BookService bookService;
-
-    public BookController(BookService bookService){
+    private final TestBookService bookService;
+    
+    public TestBookController(TestBookService bookService){
         this.bookService = bookService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Book>> findAll() {
-        List<Book> books = bookService.getAll();
+    public ResponseEntity<List<TestBook>> findAll() {
+        List<TestBook> books = bookService.getAll();
         return ResponseEntity.ok().body(books);
     }
 
-    @GetMapping("/byId{id}")//returning 404
-    public ResponseEntity<Book> findById(@PathVariable("id") Long id) {
-        Optional<Book> book = bookService.findById(id);
+    @GetMapping("/byId/{id}")
+    public ResponseEntity<TestBook> findById(@PathVariable("id") Long id) {
+        Optional<TestBook> book = bookService.findById(id);
         return ResponseEntity.of(book);
 
     }
 
-    @GetMapping("/findByTitle/{title}")//not returning book
-    public List<Book> findByTitle(@PathVariable("title") String title) {
+    @GetMapping("/findByTitle/{title}")
+    public List<TestBook> findByTitle(@PathVariable("title") String title) {
         return bookService.findByTitle(title);
     }
 
-    @GetMapping("/findByAuthor/{author}")//not returning book
-    public List<Book> findByAuthor(@PathVariable("author") String author) {
+    @GetMapping("/findByAuthor/{author}")
+    public List<TestBook> findByAuthor(@PathVariable("author") String author) {
         return bookService.findByAuthor(author);
     }
 
 
-    @PostMapping("/addBook")//successfully working
-    public Book create(@RequestBody @Valid Book book) {
+    @PostMapping("/addBook")
+    public TestBook create(@RequestBody @Valid TestBook book) {
         return bookService.create(book);
     }
     
-    @PutMapping("/updateBook/{id}")//Error 500
-    public ResponseEntity<Book> updateBook(@PathVariable("id") Long id, @Valid @RequestBody Book updateBook) {
-        Optional<Book> existingBook = bookService.findById(id);
-        if (existingBook.isPresent()) {
-            Optional<Book> updated = bookService.updateBook(id, updateBook);
-            return updated.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-        } else {
+ @PutMapping("/updateBook/{id}")
+    public ResponseEntity<TestBook> updateBook(@PathVariable("id") Long id, @Valid @RequestBody TestBook updateBook) {
+        try {
+            TestBook savedBook = bookService.updateBook(id, updateBook);
+            return ResponseEntity.ok(savedBook);
+        } catch (TestBookNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping("/deleteBook/{id}")//Error 500
-    public ResponseEntity<Book> delete(@PathVariable("id") Long id) {
+    @DeleteMapping("/deleteBook/{id}")
+    public ResponseEntity<TestBook> delete(@PathVariable("id") Long id) {
         bookService.removeBook(id);
         return ResponseEntity.noContent().build();
     }

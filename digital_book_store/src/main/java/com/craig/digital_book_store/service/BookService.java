@@ -27,9 +27,6 @@ public class BookService {
         this.repo = repo;
     }
 
-    // @Autowired
-    // private BookRepository repo;
-
     public List<Book> getAll() {
         return repo.findAll();
     }
