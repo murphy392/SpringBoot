@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,7 +43,7 @@ public class BookController {
         return ResponseEntity.ok().body(books);
     }
 
-    @GetMapping("/byId{id}")
+    @GetMapping("/byId/{id}")
     public ResponseEntity<Book> findById(@PathVariable("id") Long id) {
         Optional<Book> book = bookService.findById(id);
         return ResponseEntity.of(book);
@@ -61,11 +62,13 @@ public class BookController {
 
 
     @PostMapping("/addBook")
+    @PreAuthorize("hasRole('ADMIN')")
     public Book create(@RequestBody @Valid Book book) {
         return bookService.create(book);
     }
     
-    @PutMapping("/updateBook/{id}")//failing to update appropriately
+    @PutMapping("/updateBook/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Book> updateBook(@PathVariable("id") Long id, @Valid @RequestBody Book updateBook) {
         try {
             Book savedBook = bookService.updateBook(id, updateBook);
@@ -76,6 +79,7 @@ public class BookController {
     }
 
     @DeleteMapping("/deleteBook/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Book> delete(@PathVariable("id") Long id) {
         bookService.removeBook(id);
         return ResponseEntity.noContent().build();
