@@ -71,6 +71,10 @@ public class User {
         return password;
     }
 
+    public void setPassword(String password){
+        this.password = password;
+    }
+
     
     public Set<Role> getRoles() {
         return roles;
@@ -102,4 +106,6 @@ public class User {
                 ", roles=" + roles +
                 '}';
     }
+
+
 }

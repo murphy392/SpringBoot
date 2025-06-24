@@ -1,3 +1,9 @@
+/**
+ * Represents a refresh token used for authentication in the digital book store application.
+ * 
+ * This entity maps to the 'refresh_tokens' database table and is associated with a user.
+ * Refresh tokens are used to obtain new access tokens without requiring the user to re-authenticate.
+ */
 package com.craig.digital_book_store.model;
 
 import java.time.Instant;

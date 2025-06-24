@@ -1,40 +1,35 @@
 package com.craig.digital_book_store.controller;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.context.SecurityContextHolder;
-
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 import java.util.stream.Collectors;
 
-import com.craig.digital_book_store.payload.request.LoginRequest;
-import com.craig.digital_book_store.payload.request.SignUpRequest;
-import com.craig.digital_book_store.payload.response.JwtResponse;
-
-import org.springframework.security.core.Authentication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.craig.digital_book_store.repository.RoleRepository;
-import com.craig.digital_book_store.repository.UserRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.craig.digital_book_store.exceptions.TokenRefreshException;
 import com.craig.digital_book_store.model.ERole;
 import com.craig.digital_book_store.model.RefreshToken;
 import com.craig.digital_book_store.model.Role;
 import com.craig.digital_book_store.model.User;
+import com.craig.digital_book_store.payload.request.LoginRequest;
+import com.craig.digital_book_store.payload.request.SignUpRequest;
 import com.craig.digital_book_store.payload.request.TokenRefreshRequest;
+import com.craig.digital_book_store.payload.response.JwtResponse;
 import com.craig.digital_book_store.payload.response.MessageResponse;
 import com.craig.digital_book_store.payload.response.TokenRefreshResponse;
+import com.craig.digital_book_store.repository.RoleRepository;
+import com.craig.digital_book_store.repository.UserRepository;
 import com.craig.digital_book_store.security.jwt.JwtUtils;
 import com.craig.digital_book_store.service.RefreshTokenService;
 import com.craig.digital_book_store.service.UserDetailsImpl;
@@ -109,15 +104,16 @@ public class AuthController {
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
-                case "ROLE_ADMIN":
+                case "ROLE_ADMIN" -> {
                     Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                     roles.add(adminRole);
-                    break;
-                default:
+                    }
+                default -> {
                     Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                     roles.add(userRole);
+                    }
                 }
             });        
         }

@@ -31,6 +31,10 @@ public class Role {
         this.name = Objects.requireNonNull(name, "Role name cannot be null");
     }
 
+    public Role(ERole name) {
+        this.name = Objects.requireNonNull(name, "Role name cannot be null");
+    }
+
     public Long getId() {
         return id;
     }

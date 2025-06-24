@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -45,7 +46,8 @@ public class BookControllerIntegrationTest {
     //     jdbcTemplate.execute("ALTER SEQUENCE books_id_seq RESTART WITH 1");
     // }
 
-    @Test //Pass
+    @Test
+    @WithMockUser(roles = {"ADMIN","USER"})
     public void getAllBooks_shouldReturnAllBooksFromDatabase() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/books"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -56,7 +58,8 @@ public class BookControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].title", is("The Lord of the Rings: The Fellowship of the Ring")));
     }
 
-    @Test //Pass
+    @Test
+    @WithMockUser(roles = {"ADMIN","USER"})
     public void getBookById_shouldReturnBookWithGivenId() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/books/byId/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -69,7 +72,8 @@ public class BookControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.description", is("book1 description")));
     }
 
-    @Test //Pass
+    @Test
+    @WithMockUser(roles = {"ADMIN"})
     public void createBook_ShouldAddNewBookToDatabase() throws Exception {
         // Arrange
         TestBook newBook = new TestBook("The Hobbit", "J.R.R. Tolkien", 10, new BigDecimal(9.99), "The first book in the series");
@@ -86,7 +90,8 @@ public class BookControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(4)));
     }
 
-    @Test //Pass
+    @Test
+    @WithMockUser(roles = {"ADMIN"})
     public void updateBook_shouldModifyExistingBook() throws Exception {
         // Arrange
         TestBook updatedBook = new TestBook("The Hobbit", "J.R.R. Tolkien", 10, new BigDecimal(9.99), "The first book in the series");
@@ -101,7 +106,8 @@ public class BookControllerIntegrationTest {
 
     }
 
-    @Test //Pass
+    @Test
+    @WithMockUser(roles = {"ADMIN"})
     public void deleteBook_shouldRemoveBookFromDatabase() throws Exception {
         //Verify book exists
         mockMvc.perform(MockMvcRequestBuilders.get("/books/byId/3"));
